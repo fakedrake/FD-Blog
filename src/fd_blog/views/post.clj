@@ -16,11 +16,14 @@
    [:div {:class "navbar-inner"}
     [:h2 (link-to {:class "brand"} "/" "FakeDrake")]]])
 
+(defpartial usertable-link [name]
+  (link-to "/pre-subscribed" name))
+
 (defpartial sign-up [& defaults]
   [:div {:class "hero-unit"}
    [:h1 "Hello World!"]
    [:p "We are not available at the moment. Please sign up and I will let you know about anything new here! You can see who has already subscrubed "
-    (link-to "/pre-subscribed" "here")]
+    (usertable-link "here")]
    [:br]
    (form-to {:class "form-horizontal"} [:post "/"]
             (fd-text "Full Name" "yourname")
@@ -30,10 +33,9 @@
 
 ;; Partials
 (defpartial registered [name mail]
-  [:p
-   [:span (format "Welcome %s!" name)]
-   [:br]
-   [:span "We will let you know when we have news"]])
+  [:div {:class "hero-unit"}
+   [:h1 (format "Welcome %s!" name)]
+   [:p "Thank you for your interest. We will let you know when our undefined service is available. To remove yourself or to vandalize our database please click " (usertable-link "here")]])
 
 (defn homepage [cont]
   (html5
