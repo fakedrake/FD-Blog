@@ -1,11 +1,11 @@
 (ns fd-blog.views.post
   (:use [noir.core :only [defpage defpartial] :as nc]
-        [noir.response :only [redirect] :as nr]
-        [hiccup.element :only [mail-to link-to]]
+        [hiccup.element :only [link-to]]
         [hiccup.page :only [include-css include-js html5]]
         [hiccup.form :only [form-to text-field label submit-button]])
   (:require [fd-blog.models.users :as users]))
 
+;; Elements
 (defpartial fd-text [placehold id]
   [:div {:class "control-group"}
    [:label {:class "control-label"} placehold]
@@ -28,28 +28,12 @@
             [:div {:class "controls"}
              (submit-button {:type "submit" :class "btn"} "Join!")])])
 
+;; Partials
 (defpartial registered [name mail]
   [:p
    [:span (format "Welcome %s!" name)]
    [:br]
    [:span "We will let you know when we have news"]])
-
-(defpartial presubscribed-user [user]
-  (let [name (get-in user [:name])
-        email (get-in user [:email])
-        id (get-in user [:_id])]
-    [:tr
-     [:td name]
-     [:td (mail-to email)]
-     [:td (link-to {:class "btn btn-danger"} (str "/delete/" id) [:i {:class "icon-trash icon-white"}])]]))
-
-(defpartial presubscribed-users []
-  [:table {:class "table table-hover"}
-   [:tr
-    [:th "Full Name"]
-    [:th "E-mail"]
-    [:th "Delete"]]
-   (map presubscribed-user (users/all-users))])
 
 (defn homepage [cont]
   (html5
@@ -62,16 +46,10 @@
     (include-js "/js/bootstrap.min.js")
     (include-js "http://code.jquery.com/jquery-latest.js")]))
 
+;; Pages
 (defpage  "/" []
   (homepage (sign-up)))
 
 (defpage [:post "/"] {:keys [yourname yourmail]}
   (users/save yourname yourmail)
   (homepage (registered yourname yourmail)))
-
-(defpage "/pre-subscribed" []
-  (homepage (presubscribed-users)))
-
-(defpage "/delete/:id" {:keys [id]}
-  (users/delete id)
-  (redirect "/pre-subscribed"))

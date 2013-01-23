@@ -1,6 +1,7 @@
 (ns fd-blog.server
   (:require [noir.server :as server]
-            [fd-blog.views.post])
+            [fd-blog.views.post :as post]
+            [fd-blog.views.usertable :as table])
   (:gen-class))
 
 (server/load-views-ns 'fd-blog.views)
